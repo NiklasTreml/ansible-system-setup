@@ -1,0 +1,11 @@
+- name: "Install {{ software_name }} plugin"
+  ansible.builtin.shell:
+    cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf plugin add {{ plugin_name }}"
+
+- name: Install {{ software_name }}
+  ansible.builtin.shell:
+    cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf install {{ software_name }} {{ software_version }}"
+
+- name: Set global version
+  ansible.builtin.shell:
+    cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf global {{ software_name }} {{ software_version }}"

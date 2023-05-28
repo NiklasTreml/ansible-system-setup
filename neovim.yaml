@@ -1,18 +1,14 @@
-- name: Download and install Neovim
-  hosts: localhost
-  connection: local
+- hosts: localhost
+  name: Install Neovim
   tags:
     - nvim
   tasks:
-    - name: Install neovim
-      ansible.builtin.shell:
-        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf plugin add neovim"
-    - name: Install neovim
-      ansible.builtin.shell:
-        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf install neovim latest"
-    - name: Set global version
-      ansible.builtin.shell:
-        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf global neovim latest"
+    - name: Include template for Neovim installation
+      ansible.builtin.include_tasks: asdf-packages.yaml
+      vars:
+        software_name: neovim
+        plugin_name: neovim
+        software_version: latest
     - name: Install astronvim
       ansible.builtin.git:
         repo: "https://github.com/AstroNvim/AstroNvim"
