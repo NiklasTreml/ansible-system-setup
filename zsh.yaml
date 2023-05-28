@@ -1,0 +1,23 @@
+- name: Install zsh
+  hosts: localhost
+  connection: local
+  tags:
+    - zsh
+  tasks:
+    - name: Install zsh
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - zsh
+        state: latest
+    - name: Set login shell to zsh
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+        update_password: on_create
+    - name: Install zplug
+      ansible.builtin.shell:
+        cmd: "curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh"
+        creates: "{{ ansible_env.HOME }}/.zplug"

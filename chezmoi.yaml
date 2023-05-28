@@ -1,0 +1,12 @@
+- name: Install chezmoi
+  hosts: localhost
+  connection: local
+  tags:
+    - chezmoi
+  tasks:
+    - name: Install Chezmoi
+      ansible.builtin.shell:
+        cmd: 'sh -c "$(curl -fsLS get.chezmoi.io) -b ~/.local/bin"'
+    - name: chezmoi init
+      ansible.builtin.shell:
+        cmd: "chezmoi init --apply https://github.com/niklastreml/dotfiles.git"

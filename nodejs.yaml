@@ -1,0 +1,15 @@
+- name: Install Latest Node.js
+  hosts: localhost
+  connection: local
+  tags:
+    - nodejs
+  tasks:
+    - name: Install nodejs plugin
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf plugin add nodejs"
+    - name: Install nodejs
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf install nodejs latest"
+    - name: Set global version
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf global nodejs latest"

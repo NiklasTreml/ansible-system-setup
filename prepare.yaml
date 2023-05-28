@@ -1,0 +1,17 @@
+- name: Prepare folders
+  hosts: localhost
+  connection: local
+  tags:
+    - folders
+    - zsh
+    - nvim
+    - go
+    - rust
+  tasks:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/bin"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: "0755"

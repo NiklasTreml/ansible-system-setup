@@ -1,0 +1,19 @@
+- name: Install Rustup
+  hosts: localhost
+  connection: local
+  tags:
+    - rust
+  tasks:
+    - name: Download Rustup installer
+      ansible.builtin.uri:
+        url: "https://sh.rustup.rs"
+        status_code:
+          - 200
+          - 304
+        method: GET
+        dest: "/tmp/rustup-installer.sh"
+        mode: "0755"
+    - name: Run Rustup installer
+      ansible.builtin.shell:
+        cmd: "/tmp/rustup-installer.sh -y"
+        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"

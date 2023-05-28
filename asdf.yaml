@@ -1,0 +1,15 @@
+
+- name: Install asdf
+  hosts: localhost
+  connection: local
+  tags:
+    - nodejs
+    - asdf
+  tasks:
+    - name: Install asdf
+      ansible.builtin.git:
+        repo: "https://github.com/asdf-vm/asdf.git"
+        dest: "{{ ansible_env.HOME }}/.asdf"
+        depth: 1
+        clone: true
+        version: "v0.11.3"

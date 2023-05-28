@@ -1,0 +1,26 @@
+- name: Install packages
+  hosts: localhost
+  connection: local
+  tags:
+    - git
+    - zsh
+    - nvim
+    - go
+    - rust
+    - chezmoi
+    - nodejs
+  tasks:
+    - name: Install packages
+      become: true
+      register: asdf_clone
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - tmux
+          - ripgrep
+          - curl
+          - unzip
+          - git
+          - jq
+          - fzf
+        state: latest
