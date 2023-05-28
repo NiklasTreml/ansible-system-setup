@@ -24,5 +24,5 @@ RUN python3 get-pip.py --user
 RUN python3 -m pip install --user ansible
 RUN echo export PATH=$PATH:/home/${USERNAME}/.local/bin >> /home/${USERNAME}/.bashrc
 SHELL ["/bin/bash", "-c"]
-COPY playbook.yaml /home/${USERNAME}/playbook.yaml
-COPY run.sh /home/${USERNAME}/run.sh
+COPY . .
+

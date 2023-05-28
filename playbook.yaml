@@ -41,6 +41,7 @@
           - unzip
           - git
           - jq
+          - fzf
         state: latest
 
 - name: Install asdf
