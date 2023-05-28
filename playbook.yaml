@@ -1,0 +1,169 @@
+---
+- name: Prepare folders
+  hosts: localhost
+  connection: local
+  tags:
+    - folders
+    - zsh
+    - nvim
+    - go
+    - rust
+  tasks:
+    - name: Create directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/bin"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: "0755"
+
+- name: Install packages
+  hosts: localhost
+  connection: local
+  tags:
+    - git
+    - zsh
+    - nvim
+    - go
+    - rust
+    - chezmoi
+    - nodejs
+  tasks:
+    - name: Install packages
+      become: true
+      register: asdf_clone
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - tmux
+          - ripgrep
+          - curl
+          - unzip
+          - git
+        state: latest
+
+- name: Install asdf
+  hosts: localhost
+  connection: local
+  tags:
+    - nodejs
+    - asdf
+  tasks:
+    - name: Install asdf
+      ansible.builtin.git:
+        repo: "https://github.com/asdf-vm/asdf.git"
+        dest: "{{ ansible_env.HOME }}/.asdf"
+        depth: 1
+        clone: true
+        version: "v0.11.3"
+
+- name: Download and install Neovim
+  hosts: localhost
+  connection: local
+  tags:
+    - nvim
+  tasks:
+    - name: Install neovim
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf plugin add neovim"
+    - name: Install neovim
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf install neovim latest"
+    - name: Set global version
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf global neovim latest"
+    - name: Install astronvim
+      ansible.builtin.git:
+        repo: "https://github.com/AstroNvim/AstroNvim"
+        dest: ~/.config/nvim
+        depth: 1
+        clone: true
+
+- name: Install Latest Node.js
+  hosts: localhost
+  connection: local
+  tags:
+    - nodejs
+  tasks:
+    - name: Install nodejs plugin
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf plugin add nodejs"
+    - name: Install nodejs
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf install nodejs latest"
+    - name: Set global version
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf global nodejs latest"
+
+- name: Install Latest Golang
+  hosts: localhost
+  connection: local
+  tags:
+    - nodejs
+  tasks:
+    - name: Install golang plugin
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf plugin-add golang https://github.com/kennyp/asdf-golang.git"
+    - name: Install golang
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf install golang latest"
+    - name: Set global version
+      ansible.builtin.shell:
+        cmd: "ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && asdf global golang latest"
+
+- name: Install Rustup
+  hosts: localhost
+  connection: local
+  tags:
+    - rust
+  tasks:
+    - name: Download Rustup installer
+      ansible.builtin.uri:
+        url: "https://sh.rustup.rs"
+        status_code:
+          - 200
+          - 304
+        method: GET
+        dest: "/tmp/rustup-installer.sh"
+        mode: "0755"
+    - name: Run Rustup installer
+      ansible.builtin.shell:
+        cmd: "/tmp/rustup-installer.sh -y"
+        creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+
+- name: Install zsh
+  hosts: localhost
+  connection: local
+  tags:
+    - zsh
+  tasks:
+    - name: Install zsh
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name:
+          - zsh
+        state: latest
+    - name: Set login shell to zsh
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+        update_password: on_create
+    - name: Install zplug
+      ansible.builtin.shell:
+        cmd: "curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh"
+        creates: "{{ ansible_env.HOME }}/.zplug"
+
+- name: Install chezmoi
+  hosts: localhost
+  connection: local
+  tags:
+    - chezmoi
+  tasks:
+    - name: Install Chezmoi
+      ansible.builtin.shell:
+        cmd: 'sh -c "$(curl -fsLS get.chezmoi.io) -b ~/.local/bin"'
+    - name: chezmoi init
+      ansible.builtin.shell:
+        cmd: "chezmoi init --apply https://github.com/niklastreml/dotfiles.git"
