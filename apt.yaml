@@ -21,6 +21,7 @@
           - ripgrep
           - curl
           - unzip
+          - neofetch
           - git
           - jq
           - fzf
