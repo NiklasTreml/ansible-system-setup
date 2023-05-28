@@ -1,0 +1,21 @@
+- name: Install Latest kubectl
+  hosts: localhost
+  connection: local
+  tags:
+    - kubectl
+  tasks:
+    - name: Include template for kubectl installation
+      ansible.builtin.include_tasks: asdf-packages.yaml
+      vars:
+        software_name: kubectl
+        plugin_name: kubectl
+        software_version: latest
+    - name: Include template for krew installation
+      ansible.builtin.include_tasks: asdf-packages.yaml
+      vars:
+        software_name: krew
+        plugin_name: krew https://github.com/nlamirault/asdf-krew.git
+        software_version: v0.4.3
+    - name: Krew installer
+      ansible.builtin.shell:
+        cmd: ASDF_DIR={{ ansible_env.HOME }}/.asdf . {{ ansible_env.HOME }}/.asdf/asdf.sh && krew install krew

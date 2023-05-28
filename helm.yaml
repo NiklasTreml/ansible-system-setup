@@ -1,0 +1,12 @@
+- name: Install Latest helm
+  hosts: localhost
+  connection: local
+  tags:
+    - helm
+  tasks:
+    - name: Include template for helm installation
+      ansible.builtin.include_tasks: asdf-packages.yaml
+      vars:
+        software_name: helm
+        plugin_name: helm https://github.com/Antiarchitect/asdf-helm.git
+        software_version: latest

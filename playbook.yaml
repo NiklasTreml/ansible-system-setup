@@ -7,3 +7,6 @@
 - import_playbook: rust.yaml
 - import_playbook: zsh.yaml
 - import_playbook: chezmoi.yaml
+- import_playbook: go-packages.yaml
+- import_playbook: helm.yaml
+- import_playbook: kubectl.yaml

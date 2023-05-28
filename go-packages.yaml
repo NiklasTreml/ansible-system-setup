@@ -1,0 +1,14 @@
+- name: Install Latest Lazygit
+  hosts: localhost
+  connection: local
+  tags:
+    - lazygit
+  tasks:
+    - name: Include template for lazygit installation
+      ansible.builtin.include_tasks: go-install.yaml
+      vars:
+        git_repo: github.com/jesseduffield/lazygit@latest
+    - name: Install gdu
+      ansible.builtin.include_tasks: go-install.yaml
+      vars:
+        git_repo: github.com/dundee/gdu/v5/cmd/gdu@latest
